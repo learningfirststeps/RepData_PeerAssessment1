@@ -84,14 +84,4 @@ The impact (difference) in **mean** value is **`r as.character(dif_mean)`** and 
 ## Are there differences in activity patterns between weekdays and weekends?
 ```{r echo=TRUE}
 
-weekdata <- transform(restoreddata, weekdayff = as.POSIXlt(as.Date(restoreddata$date))$wday)
-for (z in 1:nrow(weekdata)) weekdata$weekdayff[z] <- if (weekdata$weekdayff[z] %in% c(0,6)) "weekend" else "weekday"
-
-plot1 <- xyplot(as.numeric(tapply(steps, interval, mean)) ~ as.numeric(interval) | weekdayff, data = subset(weekdata, weekdata$weekday == "weekday"), type = "l", xlab = "Interval", ylab = "Number of steps" )
-
-plot2 <- xyplot(as.numeric(tapply(steps, interval, mean)) ~ as.numeric(interval) | weekdayff, data = subset(weekdata, weekdata$weekday == "weekend"), type = "l", xlab = "Interval", ylab = "Number of steps" )
-
-library(gridExtra)
-grid.arrange(plot1,plot2, nrow=2)
-
 ```

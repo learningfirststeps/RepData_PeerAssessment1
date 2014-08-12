@@ -84,14 +84,32 @@ The impact (difference) in **mean** value is **`r as.character(dif_mean)`** and 
 ## Are there differences in activity patterns between weekdays and weekends?
 ```{r echo=TRUE}
 
-weekdata <- transform(restoreddata, weekdayff = as.POSIXlt(as.Date(restoreddata$date))$wday)
-for (z in 1:nrow(weekdata)) weekdata$weekdayff[z] <- if (weekdata$weekdayff[z] %in% c(0,6)) "weekend" else "weekday"
+weekdaycol <- data.frame (weekday = as.POSIXlt(as.Date(restoreddata$date))$wday)
+for (z in 1:nrow(weekdaycol)) weekdaycol$weekday[z] <- if (weekdaycol$weekday[z] %in% c(0,6)) "weekend" else "weekday"
+ffdata <- split(restoreddata, weekdaycol)
+p_new_weekend <- tapply(ffdata$`weekend`$steps, ffdata$`weekend`$interval, mean)
+p_new_weekend <- cbind(names(p_new_weekend), p_new_weekend, "weekend")
 
-plot1 <- xyplot(as.numeric(tapply(steps, interval, mean)) ~ as.numeric(interval) | weekdayff, data = subset(weekdata, weekdata$weekday == "weekday"), type = "l", xlab = "Interval", ylab = "Number of steps" )
+p_new_weekday <- tapply(ffdata$`weekday`$steps, ffdata$`weekday`$interval, mean)
+p_new_weekday <- cbind(names(p_new_weekday), p_new_weekday, "weekday")
 
-plot2 <- xyplot(as.numeric(tapply(steps, interval, mean)) ~ as.numeric(interval) | weekdayff, data = subset(weekdata, weekdata$weekday == "weekend"), type = "l", xlab = "Interval", ylab = "Number of steps" )
+p_new <- rbind(p_new_weekend,p_new_weekday)
+colnames(p_new) <- c("interval", "avg_steps_weekday", "weekday")
+p_new[,1] <- as.numeric(p_new[,1])
+p_new[,2] <- as.numeric(p_new[,2])
+p_new <- p_new[ order( p_new[,1] ), ]
+rownames(p_new) <- 1:nrow(p_new)
+## p_new <- transform(p_new, weekday = factor(p_new[,3]))
+p_factor <- factor(p_new[,3])
 
-library(gridExtra)
-grid.arrange(plot1,plot2, nrow=2)
+xyplot(as.numeric(p_new_weekend[,2]) ~ as.numeric(p_new_weekend[,1]), type = "l", xlab = "Interval", ylab = "Number of steps" )
+
+xyplot(as.numeric(p_new_weekday[,2]) ~ as.numeric(p_new_weekday[,1]), type = "l", xlab = "Interval", ylab = "Number of steps" )
+
+xyplot(as.numeric(p_new[,2]) ~ as.numeric(p_new[,1]) | p_factor, type = "l", layout = c(1, 2), xlab = "Interval", ylab = "Number of steps" )
+
+# xyplot(as.numeric(avg_steps_weekday) ~ as.numeric(interval) | weekday, data = p_new, type = "l", layout = c(1, 2), xlab = "Interval", ylab = "Number of steps" )
+
+xyplot(as.numeric(p_new[,2]) ~ as.numeric(p_new[,1]), col=p_new$weekday, layout = c(1, 2) )
 
 ```
