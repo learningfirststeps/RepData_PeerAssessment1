@@ -90,7 +90,9 @@ max_int &lt;- names( p[ p == max( p ) ]) </code></pre>
 <pre class="r"><code>### &quot;Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)&quot; *quote from assignment
 na_no &lt;- nrow(rawdata) - nrow(cleandata)</code></pre>
 <p>The total number of missing values in the dataset (i.e. the total number of rows with NAs) is <strong>2304</strong></p>
-<pre class="r"><code>### &quot;Create a new dataset that is equal to the original dataset but with the missing data filled in.&quot; *quote from assignment.&quot; I use the rounded mean for that 5-minute interval across all dataset to fill NAs.
+<p><strong>In the following assignment to restore missing data I use the rounded mean for 5-minute interval across all dataset to fill NAs.</strong></p>
+<pre class="r"><code>### &quot;Create a new dataset that is equal to the original dataset but with the missing data filled in.&quot; *quote from assignment.&quot; 
+
 restoreddata &lt;- rawdata
 for (k in 1:nrow(restoreddata)) {
         if ( is.na( restoreddata[k,&quot;steps&quot;] ) ) {

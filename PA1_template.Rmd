@@ -42,8 +42,11 @@ na_no <- nrow(rawdata) - nrow(cleandata)
 ```
 The total number of missing values in the dataset (i.e. the total number of rows with NAs) is **`r na_no`**
 
+**In the following assignment to restore missing data I use the rounded mean for 5-minute interval across all dataset to fill NAs.**
+
 ```{r echo=TRUE}
-### "Create a new dataset that is equal to the original dataset but with the missing data filled in." *quote from assignment." I use the rounded mean for that 5-minute interval across all dataset to fill NAs.
+### "Create a new dataset that is equal to the original dataset but with the missing data filled in." *quote from assignment." 
+
 restoreddata <- rawdata
 for (k in 1:nrow(restoreddata)) {
         if ( is.na( restoreddata[k,"steps"] ) ) {
